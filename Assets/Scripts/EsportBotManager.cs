@@ -4,13 +4,13 @@ using TMPro;
 
 public class EsportChatManager : MonoBehaviour
 {
-    [SerializeField] private LLMCharacter esportBot;
-    [SerializeField] private TMP_InputField userInput;
-    [SerializeField] private TextMeshProUGUI chatOutput;
+    public LLMCharacter esportBot;
+    public TMP_InputField userInput;
+    public TextMeshProUGUI chatOutput;
     private string pendingResponse;
 
 
-    void SendMessageToAI()
+    public void SendMessageToAI()
     {
         string userMessage = userInput.text;
         if (!string.IsNullOrEmpty(userMessage))
@@ -18,20 +18,27 @@ public class EsportChatManager : MonoBehaviour
             chatOutput.text += "\n[Vous] " + userMessage;
             userInput.text = "";
 
+            Debug.Log("Sending message to AI: " + userMessage);  // Add a debug log here
+
             _ = esportBot.Chat(userMessage, OnAIResponseReceived, ReplyCompleted);
         }
     }
 
-    void OnAIResponseReceived(string response)
+    public void OnAIResponseReceived(string response)
     {
         // Stocke temporairement la réponse (sans l'afficher tout de suite)
         pendingResponse = response;
+        Debug.Log("AI response received: " + response);  // Add a debug log here to confirm the response
     }
 
-    void ReplyCompleted()
+
+    public void ReplyCompleted()
     {
+        print("here");
         // Affiche la réponse complète quand elle est prête
-        chatOutput.text += "\n[EsportBot] " + pendingResponse;
+        if(pendingResponse == null) print("L'ia na rien retourné");
+        else print(pendingResponse);
+        // chatOutput.text += "\n[EsportBot] " + pendingResponse;
     }
 
 }
