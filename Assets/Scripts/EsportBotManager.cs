@@ -16,6 +16,8 @@ public class EsportChatManager : MonoBehaviour
     [SerializeField] private Transform chatContent;
     [SerializeField] private GameObject messagePrefab;
 
+    [SerializeField] private EsportBotAnimator esportBotAnimator;
+
     public void SendMessageToAI()
     {
         string userMessage = userInput.text;
@@ -28,9 +30,20 @@ public class EsportChatManager : MonoBehaviour
             isWaitingForResponse = true;
             StartCoroutine(AnimateDots(pendingMessageObj));
 
+            // 🔥 Vérifie si le message contient "M8" ou "Vitality"
+            if (userMessage.Contains("M8") || userMessage.Contains("Vitality"))
+            {
+                esportBotAnimator.PlaySouffleAnimation();
+            }
+            else
+            {
+                esportBotAnimator.StartTalking();
+            }
+
             _ = esportBot.Chat(userMessage, OnAIResponseReceived, ReplyCompleted);
         }
     }
+
 
     public void OnAIResponseReceived(string response)
     {
@@ -72,6 +85,7 @@ public class EsportChatManager : MonoBehaviour
     public void ReplyCompleted()
     {
         pendingMessageObj = null;
+        esportBotAnimator.StopTalking(); // Le PNJ arrête de parler
     }
 
     private GameObject CreateMessage(string text)
